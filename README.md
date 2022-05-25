@@ -21,3 +21,5 @@ coef.SandwichRegCal() - returns vector of coefficients from stage 1 and stage 2 
 vcov.SandwichRegCal() - returns sandwich variance matrix from stacked estimating equation approach 
 
 Each of SandwichRegCal.lm, SandwichRegCal.glm, and SandwichRegCal.coxph require the user to provide the fitted stage 1 (stage1.model) and stage 2 model (stage2.model) objects, as well as the variable names for the error-prone exposure variable (xstar) and estimated exposure variable (xhat) in the data. 
+
+This code can accomodate data from a simple random sampling design or a complex survey sampling design. Model objects stage1.model and stage2.model must be fit using model-fitting functions from the survey package. 
