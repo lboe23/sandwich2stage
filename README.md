@@ -7,11 +7,17 @@ The sandwich variance estimate computed by our function provides an estimate of 
 This code can compute the sandwich variance for a subset of stage 2 models including linear models, generalized linear models (GLM), and Cox proportional hazards models, but this code can be adapted to work more generally for any model for which a sandwich variance estimator exists.  
 
 Functions included in SandwichVar.R are as follows:
+
 SandwichRegCal.lm() - computes the sandwich when the stage 2 model is a linear model (returns a list)
+
 SandwichRegCal.glm() - computes the sandwich when the stage 2 model is a generalized linear model (returns a list)
+
 SandwichRegCal.coxph() - computes the sandwich when the stage 2 model is a Cox PH model (returns a list)
+
 print.SandwichRegCal() - print function for SandwichRegCal
+
 coef.SandwichRegCal() - returns vector of coefficients from stage 1 and stage 2 models 
+
 vcov.SandwichRegCal() - returns sandwich variance matrix from stacked estimating equation approach 
 
 Each of SandwichRegCal.lm, SandwichRegCal.glm, and SandwichRegCal.coxph require the user to provide the fitted stage 1 (stage1.model) and stage 2 model (stage2.model) objects, as well as the variable names for the error-prone exposure variable (xstar) and estimated exposure variable (xhat) in the data. 
