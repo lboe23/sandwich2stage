@@ -16,23 +16,6 @@ library(numDeriv)
 # coef.SandwichRegCal() - returns vector of coefficients from stage 1 and stage 2 models 
 # vcov.SandwichRegCal() - returns sandwich variance matrix from stacked estimating equation approach 
 
-####Things to develop in this code:
-################ 1 ######################
-#Adopt the trick for hidden functions inside a package 
-# example is survey:::estfuns.lm, survey:::estfuns.glm, and survey:::estfuns.coxph --
-# idea is that when we call a function, like potentially SandwichRegCal(), it will call an internal function
-#   in order to know whether to use the .lm, .glm, or .coxph hidden function
-################ 2 ######################
-#Need to add more error checks
-# Specific one I can think of - the third error check below asks the user to...
-#   "Please run the stage 1 model and stage 2 model using the same data set and survey design"
-#      ...But this isn't entirely what we want The stage 2 model could be fit with a design created using subset function.
-#          I think we need to go with idea that we might have 2 design objects, and they have a row level ID used to join them. 
-################ 3 ######################
-#Cox function - make this work for more complex settings like time varying covariate
-# Have commented
-
-
 
 # Function SandwichRegCal.lm() - computes the sandwich when the stage 2 model is a linear model (returns a list)
 # inputs: stage 1 model object, stage 2 model object, name of xstar, name of xhat
