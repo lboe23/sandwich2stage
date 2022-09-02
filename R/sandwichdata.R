@@ -1,0 +1,28 @@
+#' Example Dataset: Maternal Weights
+#'
+#' This SIMULATED dataset contains data on demographic
+#' characteristics and clinical data related to childhood obesity
+#' for 10335 mother-child pairs. It is used to generate the
+#' workflow in the main package vignette. It is based on a study
+#' that used multi-wave adaptive sampling to validate electronic
+#' health records that target factors related to childhood obesity
+#' (see https://www.pcori.org/research-results/2017/developin-methods-estimate-and-address-errors-studies-using-electronic-health).
+#'
+#' See package vignettes for more details.
+#'
+#' @docType data
+#'
+#' @name sandwichdata
+#' @format \code{sandwichdata:} a data frame with 10000 rows and 9 columns
+#' \describe{
+#'  \item{\code{ID}}{a unique ID variable for each subject in the data frame}
+#'  \item{\code{x}}{the true continuous exposure variable of interest (usually unknown)}
+#'  \item{\code{xstar}}{the error-prone, continuous exposure variable, available on all cohort study subjects (e.g. self-reported energy intake)}
+#'  \item{\code{xstarstar}}{the exposure variable prone to classical measurement error, available only on a subset (e.g. recovery biomarker for energy intake)}
+#'  \item{\code{v}}{an indicator variable for whether subjecs are in the subset used to fit the stage 1 model}
+#'  \item{\code{z}}{a precisely-measured continuous covariate in the data set, also assumed to be related to the outcomes of interest}
+#'  \item{\code{y}}{a binary outcome variable in the data set (e.g. hypertension) to be used in a logistic regression model}
+#'  \item{\code{Time}}{failure time in years, to be used in a Cox model}
+#'  \item{\code{delta}}{an indicator of whether failure or right-censoring occured at the end of the time period, to be used in a Cox model}
+#'  }
+NULL

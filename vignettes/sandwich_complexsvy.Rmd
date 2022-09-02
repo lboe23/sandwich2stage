@@ -1,0 +1,78 @@
+---
+title: "Sandwich Variance in 2 Stage Regression with Data from a Complex Survey Design"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sandwich Variance in 2 Stage Regression with Data from a Complex Survey Design}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The goal of the package sandwich2stage is to compute an estimate of the sandwich variance for two-stage regression settings. Our function assumes that at stage 1, a linear regression calibration model is fit to obtain a plug-in estimate of the nuisance parameters, then at stage 2, the user fits an outcome model that relies on these plug-in estimates. The user must first load our package, as follows: 
+
+```{r setup}
+library(sandwich2stage)
+```
+
+First, we load the data from our package. Note that this sample data set is assumed to be from a complex survey design with stratification, clustering, and unequal probability weighting. This data set has XXX rows (e.g. subjects) and 9 columns:
+- $ID$: a unique ID variable for each subject in the data frame
+- $PSUid$: the primary sampling unit (PSU) or cluster ID variable
+- $strat$: the variable specifying the strata of the survey design
+- $myweights$: the sampling weights reflecting unequal probability of selection into the sample
+- $xstar$: the error-prone, continuous exposure variable, available on all cohort study subjects (e.g. self-reported energy intake)
+- $xstarstar$: the exposure variable prone to classical measurement error, available only on a subset (e.g. recovery biomarker for energy intake)
+- $v$: an indicator variable for whether subjecs are in the subset used to fit the stage 1 model
+- $z$: a precisely-measured continuous covariate in the data set, also assumed to be related to the outcomes of interest
+- $y$: a binary outcome variable in the data set (e.g. hypertension) to be used in a logistic regression model
+- $Time$: failure time in years, to be used in a Cox model
+- $delta$: an indicator of whether failure or right-censoring occured at the end of the time period, to be used in a Cox model
+
+```{load data}
+data("sandwichdata_svy")
+head(sandwichdata_svy)
+```
+
+Next, we will create the survey design object, specifying that this is a complex survey design. We begin
+
+```{svy design}
+sampdesign <- svydesign(id=~PSUid, strata=~strat,weights=~myweights, data=sandwichdata_svy)  
+```
+Now we fit the stage 1 and stage 2 models, saving the estimated nuisance parameters from the stage 1 model and using them to obtain an estimated of the unknown exposure ($\hat{X}_i$), which will be used in the stage 2 model. We update the survey design to include this new estimated exposure (``xhat"). We will first assume that we are interested in fitting a logistic regression stage 2 outcome model using the binary outcome variable $y$ using svyglm() with a binomial family.
+
+```{fit models}
+stage1.model<-svyglm(xstarstar~xstar+z,design=sampdesign,family=gaussian(),subset=v==1)
+alphas.stage1<-coef(stage1.model)
+sampdesign <- update(sampdesign,xhat =predict(stage1.model,newdata=sampdesign$variables) )
+stage2.model.glm<-  svyglm(y ~ xhat+z,design=sampdesign,family=binomial())
+```
+
+Finally, our function sandwich2stage() may be used to obtain an estimate of the sandwich variance. This function requires the following arguments: the fitted stage 1 and 2 model objects, the names of the variables $X^*_i$ and $\hat{X}_i$ in the data, and the names of the subject ID variables for stage 1 and stage 2 models. 
+
+
+```{obtain sandwich 1}
+sandwich.object1<-sandwich2stage(stage1.model,stage2.model.glm,
+                                  xstar="xstar",xhat="xhat",
+                                  Stage1ID="ID",Stage2ID="ID")
+sandwichvar1<-vcov(sandwich.object1)
+```
+
+Now, suppose we are also interested in using the same estimated exposure variable $\hat{X}_i$ in a Cox proportional hazards stage 2 outcome model. Below, we fit this stage 2 model using svycoxph():
+
+```{fit Cox model}
+stage2.model.Cox<- svycoxph(Surv(Time, delta) ~ xhat+z, design=sampdesign)
+```
+
+Once again, we can use our function sandwich2stage() to obtain an estimate of the sandwich variance when the stage 2 model is a Cox model:
+
+```{obtain sandwich 2}
+sandwich.object2<-sandwich2stage(stage1.model,stage2.model.Cox,
+                                  xstar="xstar",xhat="xhat",
+                                  Stage1ID="ID",Stage2ID="ID")
+sandwichvar2<-vcov(sandwich.object2)
+```

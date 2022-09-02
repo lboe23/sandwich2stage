@@ -1,0 +1,33 @@
+Package: sandwich2stage
+Title: Implement sandwich variance estimation in 2-stage regression settings
+Version: 1.0
+Date: 2022-09-02
+Authors@R: c(
+	person(given = "Lillian",
+               family = "Boe",
+               role = c("aut", "cre"),
+               email = "boel@pennmedicine.upenn.edu"),
+	person(given = "Pamela",
+      	       family = "Shaw",
+	       role = "ctb"),
+	person(given = "Thomas",
+	       family = "Lumley",
+	       role = "ctb"),
+	person(given = "Jasper",
+	       family = "Yang",
+	       role = "rev"))
+Maintainer: Lillian Boe <boel@pennmedicine.upenn.edu>
+Description: A function for computing a sandwich variance estimate obtained by stacking the stage 1 and stage 2 model estimating equations. 
+License: GPL (>= 2)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.1
+Author: Lillian Boe [aut, cre],
+  Pamela Shaw [ctb],
+  Thomas Lumley [ctb],
+  Jasper Yang [rev]
+Imports: survey, survival, stats, sandwich, numDeriv, stringr
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
